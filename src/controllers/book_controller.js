@@ -17,7 +17,7 @@ const addBook = async (req, res) => {
     }
 };
 
-const getAllBooks = async (req, res) => {
+const getBooks = async (req, res) => {
     try {
         const books = await Book.find();
         res.status(200).json(books);
@@ -28,3 +28,5 @@ const getAllBooks = async (req, res) => {
         });
     }
 };
+
+module.exports = { addBook, getBooks };
