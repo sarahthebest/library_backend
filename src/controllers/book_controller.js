@@ -1,19 +1,68 @@
 const Book = require("../models/Book");
+const axios = require("axios");
 
 const addBook = async (req, res) => {
+    const { title, author, status } = req.body;
+
+    const searchQuery = `intitle:${title} inauthor:${author}`;
+
     try {
-        const { title, author, genre, status } = req.body;
-        const newBook = new Book({ title, author, genre, status });
-        await newBook.save();
-        res.status(201).json({
-            message: "Book added successfully",
-            book: newBook,
-        });
+        const response = await axios.get(
+            `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}`
+        );
+
+        if (response.data.totalItems > 0) {
+            const firstBook = response.data.items.find((item) => {
+                const titleMatches =
+                    item.volumeInfo.title.toLowerCase() === title.toLowerCase();
+                const authorMatches =
+                    item.volumeInfo.authors &&
+                    item.volumeInfo.authors.some(
+                        (a) => a.toLowerCase() === author.toLowerCase()
+                    );
+                return titleMatches && authorMatches;
+            });
+
+            if (firstBook) {
+                const bookData = firstBook.volumeInfo;
+
+                const newBook = new Book({
+                    title: bookData.title,
+                    authors: bookData.authors || [],
+                    status, 
+                    publisher: bookData.publisher || "",
+                    publishedDate: bookData.publishedDate || "",
+                    description: bookData.description || "",
+                    isbn: bookData.industryIdentifiers
+                        ? bookData.industryIdentifiers.map(
+                              (id) => id.identifier
+                          )
+                        : [],
+                    pageCount: bookData.pageCount || 0,
+                    categories: bookData.categories || [],
+                    imageLinks: bookData.imageLinks || {},
+                    averageRating: bookData.averageRating || 0,
+                    ratingsCount: bookData.ratingsCount || 0,
+                    previewLink: bookData.previewLink || "",
+                    infoLink: bookData.infoLink || "",
+                });
+                
+
+                await newBook.save();
+
+                res.status(200).json({
+                    message: "Book added successfully",
+                    book: newBook,
+                });
+            } else {
+                res.status(404).json({ message: "No matching book found" });
+            }
+        } else {
+            res.status(404).json({ message: "Book not found" });
+        }
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to add book",
-            error: error.message,
-        });
+        console.error(error);
+        res.status(500).json({ message: "Error adding book" });
     }
 };
 
