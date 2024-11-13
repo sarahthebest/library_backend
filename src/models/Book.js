@@ -4,7 +4,6 @@ const bookSchema = new mongoose.Schema({
   title: String,
   authors: [String],
   status: String,
-  publisher: String,
   publishedDate: String,
   description: String,
   isbn: [String],
@@ -15,8 +14,6 @@ const bookSchema = new mongoose.Schema({
     thumbnail: String
   },
   averageRating: Number,
-  ratingsCount: Number,
-  previewLink: String,
   infoLink: String,
   status: {
     type: String,

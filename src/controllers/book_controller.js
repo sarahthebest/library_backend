@@ -30,7 +30,6 @@ const addBook = async (req, res) => {
                     title: bookData.title,
                     authors: bookData.authors || [],
                     status, 
-                    publisher: bookData.publisher || "",
                     publishedDate: bookData.publishedDate || "",
                     description: bookData.description || "",
                     isbn: bookData.industryIdentifiers
@@ -42,8 +41,6 @@ const addBook = async (req, res) => {
                     categories: bookData.categories || [],
                     imageLinks: bookData.imageLinks || {},
                     averageRating: bookData.averageRating || 0,
-                    ratingsCount: bookData.ratingsCount || 0,
-                    previewLink: bookData.previewLink || "",
                     infoLink: bookData.infoLink || "",
                 });
                 
