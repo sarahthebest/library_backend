@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const book_routes = require("./routes/book_routes");
 const health_route = require("./routes/health_route");
+const auth_routes = require("./routes/auth_routes");
 
 const app = express();
 
@@ -29,5 +30,9 @@ app.use("/api/books", book_routes);
 
 // Health route
 app.use("/api", health_route); 
+
+// Auth routes
+app.use("/api/auth", auth_routes); 
+
 
 module.exports = app;
