@@ -10,9 +10,9 @@ const auth_routes = require("./routes/auth_routes");
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5001'
-    // methods: ['GET', 'POST'], 
-    // allowedHeaders: ['Content-Type'], 
+    origin: 'http://localhost:5001',
+    methods: ['GET , POST'], 
+    allowedHeaders: ['Content-Type'], 
 }));  
 
 app.use(express.json());
