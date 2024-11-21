@@ -17,13 +17,11 @@ const addBook = async (req, res) => {
             const newBook = new Book({
                 title: bookData.title,
                 authors: bookData.authors || [],
-                status, 
+                status,
                 publishedDate: bookData.publishedDate || "",
                 description: bookData.description || "",
                 isbn: bookData.industryIdentifiers
-                    ? bookData.industryIdentifiers.map(
-                          (id) => id.identifier
-                      )
+                    ? bookData.industryIdentifiers.map((id) => id.identifier)
                     : [],
                 pageCount: bookData.pageCount || 0,
                 categories: bookData.categories || [],
@@ -47,7 +45,6 @@ const addBook = async (req, res) => {
     }
 };
 
-
 const getBooks = async (req, res) => {
     try {
         const books = await Book.find();
@@ -60,4 +57,24 @@ const getBooks = async (req, res) => {
     }
 };
 
-module.exports = { addBook, getBooks };
+const searchBooks = async (req, res) => {
+    const { title } = req.query;
+    const searchQuery = `intitle:${title}`;
+    try {
+        const response = await axios.get(
+            `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&orderBy=relevance&maxResults=10`
+        );
+        if (response.data.items) {
+            return res.json(response.data.items);
+        } else {
+            return res.status(404).json({ message: "No books found" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res
+            .status(500)
+            .json({ error: "Error occurred while searching" });
+    }
+};
+
+module.exports = { addBook, getBooks, searchBooks };
