@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 
-const SECRET_KEY = 'your_secret_key';  
-const REFRESH_SECRET_KEY = 'your_refresh_secret_key';  
+const SECRET_KEY = process.env.SECRET_KEY;  
+const REFRESH_SECRET_KEY = process.env.REFRESH_SECRET_KEY;  
 
 exports.generateAccessToken = (user) => {
     const payload = {
